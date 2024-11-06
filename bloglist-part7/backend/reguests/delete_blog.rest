@@ -1,0 +1,3 @@
+DELETE http://localhost:3003/api/blogs/Add_id_here
+Content-Type: application/json
+Authorization: Bearer Add_token_here

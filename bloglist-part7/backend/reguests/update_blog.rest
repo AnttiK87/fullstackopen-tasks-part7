@@ -1,0 +1,15 @@
+PUT http://localhost:3003/api/blogs/670e101eeeb3da59ff1b898c
+Content-Type: application/json
+
+  {
+    "title": "Testi Blogi 1",
+    "author": "Matti Möttönen",
+    "url": "https://www.testihöpöhöpöä1.fi/",
+    "likes": 5,
+    "user": {
+      "username": "akortelai",
+      "name": "Antti Kortelainen",
+      "id": "670e02fee44e70299a2bc3df"
+    },
+    "id": "670e101eeeb3da59ff1b898c"
+  }

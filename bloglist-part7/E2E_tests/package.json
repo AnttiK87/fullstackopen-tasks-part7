@@ -1,0 +1,35 @@
+{
+  "name": "e2e_tests",
+  "version": "1.0.0",
+  "description": "E2E test for blog application",
+  "main": "index.js",
+  "scripts": {
+    "test": "playwright test",
+    "test:report": "playwright show-report",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnttiK87/fullstackopen-tasks-part5.git"
+  },
+  "keywords": [
+    "E2E_tests"
+  ],
+  "author": "Antti Kortelainen",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/AnttiK87/fullstackopen-tasks-part5/issues"
+  },
+  "homepage": "https://github.com/AnttiK87/fullstackopen-tasks-part5#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.13.0",
+    "@playwright/test": "^1.48.1",
+    "@stylistic/eslint-plugin-js": "^2.9.0",
+    "@types/node": "^22.7.9",
+    "eslint": "^9.13.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.11.0"
+  }
+}
