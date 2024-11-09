@@ -27,12 +27,15 @@ const initialBlogs = [
     author: 'Robert C. Martin',
     url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
     likes: 9,
-  }
+  },
 ]
 
 // For creating non existing id
 const nonExistingId = async () => {
-  const blog = new Blog({ title: 'willremovethissoon', url: 'willremovethissoon', })
+  const blog = new Blog({
+    title: 'willremovethissoon',
+    url: 'willremovethissoon',
+  })
   await blog.save()
   await blog.deleteOne()
 
@@ -42,13 +45,13 @@ const nonExistingId = async () => {
 // For getting blogs in the db
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
-  return blogs.map(blog => blog.toJSON())
+  return blogs.map((blog) => blog.toJSON())
 }
 
 // For getting users in the db
 const usersInDb = async () => {
   const users = await User.find({})
-  return users.map(u => u.toJSON())
+  return users.map((u) => u.toJSON())
 }
 
 // For assuring that db is at correct state before tests
@@ -80,5 +83,10 @@ const loginResponse = async () => {
 
 // Exports
 module.exports = {
-  initialBlogs, nonExistingId, blogsInDb, usersInDb, createNewTestUser, loginResponse
+  initialBlogs,
+  nonExistingId,
+  blogsInDb,
+  usersInDb,
+  createNewTestUser,
+  loginResponse,
 }

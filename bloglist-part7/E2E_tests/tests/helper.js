@@ -4,7 +4,7 @@
 const { expect } = require('@playwright/test')
 
 //Helper fuction for loggin in
-const loginWith = async (page, username, password)  => {
+const loginWith = async (page, username, password) => {
   await page.getByRole('button', { name: 'login' }).click()
   await page.getByTestId('username').fill(username)
   await page.getByTestId('password').fill(password)
@@ -24,11 +24,13 @@ const createBlog = async (page, title) => {
 
 //Helper fuction for adding likes to a blog
 const addLikes = async (page, title, count) => {
-  await page.getByText(`Title: ${title}`)
-    .getByRole('button', { name: 'View' }).click()
+  await page
+    .getByText(`Title: ${title}`)
+    .getByRole('button', { name: 'View' })
+    .click()
   for (let i = 0; i < count; i++) {
     await page.getByRole('button', { name: 'Like' }).click()
-    await page.waitForSelector(`text=Likes: ${i+1}`)
+    await page.waitForSelector(`text=Likes: ${i + 1}`)
   }
   await expect(page.getByText(`Likes: ${count}`)).toBeVisible()
   await page.getByRole('button', { name: 'Hide' }).click()
@@ -44,13 +46,16 @@ const likesToArray = async (page) => {
     const blogTitle = await blogElements.nth(i).textContent()
     console.log(`Blog title content: ${blogTitle}`)
 
-
-    await page.getByText(`${blogTitle}`)
-      .getByRole('button', { name: 'View' }).click()
+    await page
+      .getByText(`${blogTitle}`)
+      .getByRole('button', { name: 'View' })
+      .click()
 
     await page.waitForSelector('.blogStyle >> div:has-text("Likes:")')
 
-    const likesText = await page.locator('.blogStyle >> div:has-text("Likes:")').textContent()
+    const likesText = await page
+      .locator('.blogStyle >> div:has-text("Likes:")')
+      .textContent()
     console.log(`likes text content: ${likesText}`)
 
     const likes = parseInt(likesText.replace('Likes: ', ''))

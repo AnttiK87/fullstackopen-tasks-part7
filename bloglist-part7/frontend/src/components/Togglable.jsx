@@ -3,6 +3,7 @@
 //dependencies
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import PropTypes from 'prop-types'
+import { Button } from 'react-bootstrap'
 
 // togglable component, forwardRef allows parent components to access its fuctionalities
 const Togglable = forwardRef((props, ref) => {
@@ -21,19 +22,38 @@ const Togglable = forwardRef((props, ref) => {
   // useImperativeHandle allows parent component to toggle visibility
   useImperativeHandle(ref, () => {
     return {
-      toggleVisibility
+      toggleVisibility,
     }
   })
+
+  const cancelButton = {
+    marginLeft: 30,
+  }
+
+  const marginTop = {
+    marginTop: 20,
+    marginLeft: 30,
+    width: 150,
+  }
 
   // for rendering buttons
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+        <Button variant="primary" className="Button" style={marginTop} onClick={toggleVisibility}>
+          {props.buttonLabel}
+        </Button>
       </div>
       <div style={showWhenVisible}>
         {props.children}
-        <button onClick={toggleVisibility}>Cancel</button>
+        <Button
+          variant="primary"
+          className="delButton"
+          style={cancelButton}
+          onClick={toggleVisibility}
+        >
+          Cancel
+        </Button>
       </div>
     </div>
   )
@@ -41,7 +61,8 @@ const Togglable = forwardRef((props, ref) => {
 
 // setting the prop types (button label is string and it is reguired)
 Togglable.propTypes = {
-  buttonLabel: PropTypes.string.isRequired
+  buttonLabel: PropTypes.string.isRequired,
+  children: PropTypes.node, // children voi olla mitä tahansa Reactin sisällöstä
 }
 
 // display name for debugging

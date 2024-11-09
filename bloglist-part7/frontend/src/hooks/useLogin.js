@@ -2,16 +2,19 @@
 //Function for handling user loggin in
 
 //dependencies
-import { useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import loginService from '../services/login'
 import blogService from '../services/blogs'
+import { setUser, setUsername, setPassword } from '../reducers/userReducer.js'
+import { showMessage } from '../reducers/messageReducer'
 
-const useLogin = (showMessage, setUser, setUsername, setPassword) => {
-  //Login error message
-  const [errorLogin] = useState('Wrong username or password!')
+const useLogin = () => {
+  const dispatch = useDispatch()
 
-  //function for handling login
-  const handleLogin = async (event, username, password) => {
+  const username = useSelector((state) => state.user.username)
+  const password = useSelector((state) => state.user.password)
+
+  const handleLogin = async (event) => {
     event.preventDefault()
 
     try {
@@ -20,27 +23,36 @@ const useLogin = (showMessage, setUser, setUsername, setPassword) => {
         password,
       })
 
-      //Set logged in user to localStorage and set token
+      //console.log(user)
+
+      // Set logged in user to localStorage and set token
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       blogService.setToken(user.token)
-      showMessage(errorLogin, 'error')
-      setUser(user)
 
-      //Show logged in message
-      const messageLogin = `Logged in user ${user.name}`
-      showMessage(messageLogin, 'success')
+      dispatch(setUser(user))
 
-      //Set states
-      setUsername('')
-      setPassword('')
+      // Show logged in message
+      dispatch(showMessage({ text: `Logged in user ${user.name}`, type: 'success' }, 5))
+
+      // Reset username and password in Redux state
+      dispatch(setUsername(''))
+      dispatch(setPassword(''))
     } catch (exception) {
-      // Show error message if username or passwor were wrong
-      showMessage(errorLogin, 'error')
+      var errorMessage
+
+      if (exception.response && exception.response.status === 401) {
+        errorMessage = 'Wrong username or password!'
+      } else if (exception.response) {
+        errorMessage = `Error: ${exception.response.data.error}`
+      } else {
+        errorMessage = 'Network error'
+      }
+
+      dispatch(showMessage({ text: errorMessage, type: 'error' }, 5))
     }
   }
 
   return { handleLogin }
 }
 
-// exports
 export default useLogin

@@ -1,17 +1,36 @@
-//Refactored some functionalities from App.jsx to hooks. Not sure if this is the correct way to do it.
+import { useDispatch } from 'react-redux'
+import { clearUser } from '../reducers/userReducer.js'
+import { showMessage } from '../reducers/messageReducer'
+import { useNavigate } from 'react-router-dom'
 
-//Function for handling user loggin out
-const useLogout = (showMessage, setUser) => {
+// Function for handling user logging out
+const useLogout = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
   const handleLogout = async () => {
-    //clear local storage
-    window.localStorage.clear()
+    try {
+      // Clear local storage
+      window.localStorage.clear()
+      const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+      console.log(loggedUserJSON)
 
-    //Show logout message
-    const messageLogout = 'Logged out succesfully!'
-    showMessage(messageLogout, 'success')
+      // Set state
+      dispatch(clearUser())
 
-    //set state
-    setUser(null)
+      navigate('/')
+
+      // Show logout message
+      const messageLogout = 'Logged out successfully!'
+      dispatch(showMessage({ text: messageLogout, type: 'success' }, 5))
+    } catch (error) {
+      // Handle potential errors
+      console.error('Logout failed:', error)
+
+      // Show error message
+      const errorMessage = 'An error occurred during logout. Please try again.'
+      dispatch(showMessage({ text: errorMessage, type: 'error' }, 5))
+    }
   }
 
   return { handleLogout }

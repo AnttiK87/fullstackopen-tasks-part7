@@ -14,8 +14,8 @@ describe('Blog component', () => {
     likes: 12,
     user: {
       id: '1',
-      name: 'Antti Kortelainen'
-    }
+      name: 'Antti Kortelainen',
+    },
   }
 
   const user = {
@@ -69,8 +69,7 @@ describe('Blog component', () => {
   })
 
   test('check that addLike function is called twice', async () => {
-
-    const addLike =  vi.fn()
+    const addLike = vi.fn()
 
     render(<Blog blog={blog} user={user} addLike={addLike} />)
 
@@ -84,5 +83,4 @@ describe('Blog component', () => {
 
     expect(addLike.mock.calls).toHaveLength(2)
   })
-
 })

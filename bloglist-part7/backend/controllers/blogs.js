@@ -7,8 +7,7 @@ const middleware = require('../utils/middleware')
 
 // get all blogs
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog
-    .find({}).populate('user', { username: 1, name: 1 })
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
@@ -23,30 +22,39 @@ blogsRouter.get('/:id', async (request, response) => {
 })
 
 // add blog
-blogsRouter.post('/', middleware.userExtractor, async (request, response, next) => {
-  try {
-    const body = request.body
-    const user = request.user
+blogsRouter.post(
+  '/',
+  middleware.userExtractor,
+  async (request, response, next) => {
+    try {
+      const body = request.body
+      const user = request.user
 
-    const blog = new Blog({
-      title: body.title,
-      author: body.author,
-      url: body.url,
-      user: user._id,
-    })
+      const blog = new Blog({
+        title: body.title,
+        author: body.author,
+        url: body.url,
+        user: user._id,
+      })
 
-    const savedBlog = await blog.save()
-    user.blogs = user.blogs.concat(savedBlog._id)
-    await user.save()
+      console.log(blog)
 
-    // Populate the user field before sending the response
-    const populatedBlog = await Blog.findById(savedBlog._id).populate('user', { id: 1 })
+      const savedBlog = await blog.save()
+      user.blogs = user.blogs.concat(savedBlog._id)
+      await user.save()
 
-    return response.status(201).json(populatedBlog)
-  } catch (error) {
-    next(error)
-  }
-})
+      // Populate the user field before sending the response
+      const populatedBlog = await Blog.findById(savedBlog._id).populate(
+        'user',
+        { id: 1, name: 1, username: 1 },
+      )
+
+      return response.status(201).json(populatedBlog)
+    } catch (error) {
+      next(error)
+    }
+  },
+)
 
 // update blog
 blogsRouter.put('/:id', async (request, response) => {
@@ -66,35 +74,41 @@ blogsRouter.put('/:id', async (request, response) => {
     likes: body.likes,
   }
 
-
   const existingBlog = await Blog.findById(request.params.id)
 
   if (!existingBlog) {
     return response.status(404).json({ error: 'Blog not found' })
   }
 
-  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true }).populate('user', { name: 1 })
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true,
+  }).populate('user', { name: 1 })
   return response.json(updatedBlog)
 })
 
 // delete blog
-blogsRouter.delete('/:id', middleware.userExtractor, async (request, response) => {
+blogsRouter.delete(
+  '/:id',
+  middleware.userExtractor,
+  async (request, response) => {
+    const userId = await request.user.id.toString()
 
-  const userId = await request.user.id.toString()
+    const blog = await Blog.findById(request.params.id)
+    if (!blog) {
+      return response.status(404).json({ error: 'blog not found' })
+    }
+    const blogAdderId = blog.user.toString()
 
-  const blog = await Blog.findById(request.params.id)
-  if (!blog) {
-    return response.status(404).json({ error: 'blog not found' })
-  }
-  const blogAdderId = blog.user.toString()
-
-  if ( userId ===   blogAdderId ) {
-    await Blog.findByIdAndDelete(request.params.id)
-    return response.status(204).end()
-  } else {
-    return  response.status(403).json({ error: 'No permission to delete this blog' })
-  }
-})
+    if (userId === blogAdderId) {
+      await Blog.findByIdAndDelete(request.params.id)
+      return response.status(204).end()
+    } else {
+      return response
+        .status(403)
+        .json({ error: 'No permission to delete this blog' })
+    }
+  },
+)
 
 // Exports
 module.exports = blogsRouter

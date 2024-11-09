@@ -1,43 +1,76 @@
-//for setting states of the login form and functionality for showing it or not
-
-//dependencies
-import { useState } from 'react'
+// components/LoginFormContainer.js
+import PropTypes from 'prop-types'
 import LoginForm from './LoginForm'
+import RegisterForm from './RegisterForm'
+import { Button } from 'react-bootstrap'
 
-const LoginFormContainer = ({ handleLogin }) => {
-  const [loginVisible, setLoginVisible] = useState(false)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+const LoginFormContainer = ({
+  loginVisible,
+  setLoginVisible,
+  registerVisible,
+  setRegisterVisible,
+}) => {
+  const styleText = {
+    padding: 100,
+    paddingTop: 50,
+    marginBottom: 0,
+  }
 
-  // functionality for showing or not the form by css style display
-  const hideWhenVisible = { display: loginVisible ? 'none' : '' }
-  const showWhenVisible = { display: loginVisible ? '' : 'none' }
+  const cancelButton = {
+    width: 100,
+    marginBottom: 30,
+    marginLeft: 60,
+  }
+
+  const hideWhenVisible = { display: loginVisible || registerVisible ? 'none' : '' }
+  const showWhenVisible = { display: loginVisible || registerVisible ? '' : 'none' }
 
   return (
     <div>
       <div style={hideWhenVisible}>
-        {/* Button for showing login form */}
-        <button onClick={() => setLoginVisible(true)}>Login</button>
+        <p style={styleText}>
+          A blog application allows users to create, view, like, and comment on blog posts. Users
+          can log in, then manage their own posts while also interacting with posts from others. The
+          application displays a list of blog entries, ordered by popularity (based on likes). Each
+          blog post includes a title, author, and link to original blog, as well as a section for
+          user comments.
+        </p>
       </div>
       <div style={showWhenVisible}>
-        {/* transfering props for LoginForm component */}
-        <LoginForm
-          username={username}
-          password={password}
-          handleUsernameChange={({ target }) => setUsername(target.value)}
-          handlePasswordChange={({ target }) => setPassword(target.value)}
-          handleSubmit={(event) => {
-            handleLogin(event, username, password)
-            setUsername('')
-            setPassword('')
-          }}
-        />
-        {/* Button for hiding login form */}
-        <button onClick={() => setLoginVisible(false)}>Cancel</button>
+        {loginVisible && <LoginForm />}
+        {registerVisible && (
+          <RegisterForm setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />
+        )}
+        {loginVisible && (
+          <Button
+            variant="primary"
+            className="delButton"
+            style={cancelButton}
+            onClick={() => setLoginVisible(false)}
+          >
+            Cancel
+          </Button>
+        )}
+        {registerVisible && (
+          <Button
+            variant="primary"
+            className="delButton"
+            style={cancelButton}
+            onClick={() => setRegisterVisible(false)}
+          >
+            Cancel
+          </Button>
+        )}
       </div>
     </div>
   )
 }
 
-// exports
+LoginFormContainer.propTypes = {
+  loginVisible: PropTypes.bool.isRequired,
+  setLoginVisible: PropTypes.func.isRequired,
+  registerVisible: PropTypes.bool.isRequired,
+  setRegisterVisible: PropTypes.func.isRequired,
+}
+
 export default LoginFormContainer

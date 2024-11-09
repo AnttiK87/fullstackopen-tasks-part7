@@ -11,11 +11,9 @@ const Blog = require('../models/blog')
 const User = require('../models/user')
 
 describe('user related requests', async () => {
-
   beforeEach(async () => {
     await helper.createNewTestUser()
   })
-
 
   test('Adding user succeeds with a fresh username', async () => {
     const usersAtStart = await helper.usersInDb()
@@ -36,7 +34,7 @@ describe('user related requests', async () => {
     //console.log('users after the addition: ', usersAtEnd) // for debugging
     assert.strictEqual(usersAtEnd.length, usersAtStart.length + 1)
 
-    const usernames = usersAtEnd.map(u => u.username)
+    const usernames = usersAtEnd.map((u) => u.username)
     assert(usernames.includes(newUser.username))
   })
 
@@ -69,13 +67,10 @@ describe('user related requests', async () => {
     const newUser = {
       username: 'ak',
       name: 'Antti Kortelainen',
-      password: 'salainen'
+      password: 'salainen',
     }
 
-    await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
+    await api.post('/api/users').send(newUser).expect(400)
 
     const response = await api.get('/api/users')
 
@@ -88,13 +83,10 @@ describe('user related requests', async () => {
     const newUser = {
       username: 'akortela',
       name: 'Antti Kortelainen',
-      password: 'sa'
+      password: 'sa',
     }
 
-    await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
+    await api.post('/api/users').send(newUser).expect(400)
 
     const response = await api.get('/api/users')
 
@@ -124,7 +116,7 @@ describe('viewing all of the blogs', () => {
   test('a specific blog is within the returned notes', async () => {
     const response = await api.get('/api/blogs')
 
-    const titles = response.body.map(r => r.title)
+    const titles = response.body.map((r) => r.title)
     assert(titles.includes('Type wars'))
   })
 })
@@ -133,20 +125,23 @@ describe('id is formatted correctly', () => {
   test('every object has Id field named id', async () => {
     const response = await api.get('/api/blogs')
 
-    const allHaveId = response.body.every(blog => blog.id)
+    const allHaveId = response.body.every((blog) => blog.id)
     assert.strictEqual(allHaveId, true, 'All blogs should have an id field')
   })
 
   test('none of the objects has Id field named _id', async () => {
     const response = await api.get('/api/blogs')
 
-    const noUnderscoreIds = response.body.every(blog => !blog._id)
-    assert.strictEqual(noUnderscoreIds, true, 'No blog should have an _id field')
+    const noUnderscoreIds = response.body.every((blog) => !blog._id)
+    assert.strictEqual(
+      noUnderscoreIds,
+      true,
+      'No blog should have an _id field',
+    )
   })
 })
 
 describe('adding of a new blog', async () => {
-
   beforeEach(async () => {
     await User.deleteMany({})
     await helper.createNewTestUser()
@@ -174,7 +169,7 @@ describe('adding of a new blog', async () => {
 
     const response = await api.get('/api/blogs')
 
-    const titles = response.body.map(r => r.title)
+    const titles = response.body.map((r) => r.title)
 
     assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
 
@@ -252,7 +247,6 @@ describe('adding of a new blog', async () => {
 })
 
 describe('viewing a specific blog', () => {
-
   test('succeeds with a valid id', async () => {
     const blogsAtStart = await helper.blogsInDb()
 
@@ -269,22 +263,17 @@ describe('viewing a specific blog', () => {
   test('fails with statuscode 404 if blog does not exist', async () => {
     const validNonexistingId = await helper.nonExistingId()
 
-    await api
-      .get(`/api/blogs/${validNonexistingId}`)
-      .expect(404)
+    await api.get(`/api/blogs/${validNonexistingId}`).expect(404)
   })
 
   test('fails with statuscode 400 if id is invalid', async () => {
     const invalidId = '5a3d5da59070081a82a3445'
 
-    await api
-      .get(`/api/blogs/${invalidId}`)
-      .expect(400)
+    await api.get(`/api/blogs/${invalidId}`).expect(400)
   })
 })
 
 describe('deletion of a blog', async () => {
-
   beforeEach(async () => {
     await helper.createNewTestUser()
   })
@@ -317,7 +306,7 @@ describe('deletion of a blog', async () => {
 
     assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
 
-    const titles = blogsAtEnd.map(r => r.title)
+    const titles = blogsAtEnd.map((r) => r.title)
     assert(!titles.includes(blogToDelete.title))
   })
 
@@ -379,10 +368,7 @@ describe('updating likes of a blog', () => {
       likes: 10,
     }
 
-    await api
-      .put(`/api/blogs/${validNonexistingId}`)
-      .send(newBlog)
-      .expect(404)
+    await api.put(`/api/blogs/${validNonexistingId}`).send(newBlog).expect(404)
   })
 
   test('fails with statuscode 400 id is invalid', async () => {
@@ -394,10 +380,7 @@ describe('updating likes of a blog', () => {
       likes: 10,
     }
 
-    await api
-      .put(`/api/blogs/${invalidId}`)
-      .send(newBlog)
-      .expect(400)
+    await api.put(`/api/blogs/${invalidId}`).send(newBlog).expect(400)
   })
 
   test('fails with status code 400 if data invalid', async () => {
@@ -411,10 +394,7 @@ describe('updating likes of a blog', () => {
       likes: 10,
     }
 
-    await api
-      .put(`/api/blogs/${blogToUpdate.id}`)
-      .send(newBlog)
-      .expect(400)
+    await api.put(`/api/blogs/${blogToUpdate.id}`).send(newBlog).expect(400)
 
     const response = await api.get('/api/blogs')
 

@@ -1,91 +1,102 @@
 //for rendering the main structure of the blog application
 
 //dependencies
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import blogService from './services/blogs'
-import { addBlog, updateBlog, deleteBlog } from './services/blogsHelper'
-
-import useShowMessage from './hooks/showMessage'
-import useLogin from './hooks/useLogin'
-import useLogout from './hooks/useLogout'
 
 import LoginFormContainer from './components/LoginFormContainer'
 import BlogList from './components/BlogList'
 import Notification from './components/Notification'
+import Menu from './components/Menu'
+import Users from './components/Users'
+import OwnProfile from './components/OwnProfile'
+import Blog from './components/Blog'
+import Footer from './components/footer'
 
+import { initializeBlogs } from './reducers/blogReducer'
+import { setUser } from './reducers/userReducer'
+import { Routes, Route } from 'react-router-dom'
 
 const App = () => {
   //states variables
-  const [blogs, setBlogs] = useState([])
+  const [loginVisible, setLoginVisible] = useState(false)
+  const [registerVisible, setRegisterVisible] = useState(false)
 
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
-  // for showing messages
-  const { errorMessage, messageType, showMessage } = useShowMessage()
-
-  // for handling login and logout
-  const { handleLogin } = useLogin(showMessage, setUser, setUsername, setPassword)
-  const { handleLogout } = useLogout(showMessage, setUser)
+  const user = useSelector((state) => state.user.user)
+  //console.log(user)
 
   // to control blogForm visibility
   const blogFormRef = useRef()
 
-  // fetching all blogs
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [])
+  const dispatch = useDispatch()
 
-  // check if a user is logged in
+  useEffect(() => {
+    dispatch(initializeBlogs())
+  }, [dispatch])
+
+  // Check if a user is logged in and set to Redux state if found
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+    console.log(loggedUserJSON)
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      setUser(user)
       blogService.setToken(user.token)
+      dispatch(setUser(user)) // Aseta käyttäjä Redux-tilaan
     }
-  }, [])
+  }, [dispatch])
 
-  // call function for adding blog
-  const handleAddBlog = (blogObject) => {
-    addBlog(blogObject, setBlogs, showMessage, blogFormRef)
+  const bottomBorder = {
+    borderBottom: '1px solid black', // Lainausmerkit arvolle
+    paddingBottom: 15,
+    paddingTop: 15,
+    paddingLeft: 30,
+    marginBottom: 0,
   }
 
-  // call function for updating blog
-  const handleUpdateBlog = (id) => {
-    updateBlog(blogs, setBlogs, showMessage, id)
+  const bcColor = {
+    backgroundColor: '#f5f0e1',
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100%',
   }
 
-  // call function for deleting blog
-  const handleDeleteBlog = (id) => {
-    deleteBlog(blogs, setBlogs, showMessage, id)
-  }
-
+  console.log(user)
   //Rendering the main structure
   return (
-    <div>
-      <h1>The List of Blogs</h1>
-      <Notification message={errorMessage} type={messageType}/>
-
-      {/* Showing login screen if user is not set */}
-      {!user && <LoginFormContainer handleLogin={handleLogin} />}
-      {/* Showing main screen if user is set */}
-      {user && <BlogList
-        user={user}
-        blogs={blogs}
-        handleLogout={handleLogout}
-        addBlog={handleAddBlog}
-        deleteBlog={handleDeleteBlog}
-        updateBlog={handleUpdateBlog}
-        blogFormRef={blogFormRef}
-      />}
+    <div className="container">
+      <Menu setLoginVisible={setLoginVisible} setRegisterVisible={setRegisterVisible} />
+      <div className="main-content" style={bcColor}>
+        <h1 style={bottomBorder}>The List of Blogs</h1>
+        <Notification />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                {/* Showing login screen if user is not set */}
+                {!user && (
+                  <LoginFormContainer
+                    loginVisible={loginVisible}
+                    setLoginVisible={setLoginVisible}
+                    registerVisible={registerVisible}
+                    setRegisterVisible={setRegisterVisible}
+                  />
+                )}
+                {/* Showing main screen if user is set */}
+                {user && <BlogList blogFormRef={blogFormRef} />}
+              </>
+            }
+          />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<OwnProfile />} />
+          <Route path="/blog/:id" element={<Blog />} />
+        </Routes>
+      </div>
+      <Footer className="footer" />
     </div>
   )
 }
 
-// exports
 export default App

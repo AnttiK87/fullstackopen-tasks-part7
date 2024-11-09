@@ -1,43 +1,61 @@
 //for rendering the main screen of blog application
 
 //dependencies
-import React from 'react'
 import Togglable from './Togglable'
 import BlogForm from './BlogForm'
-import Blog from './Blog'
+import { useSelector } from 'react-redux'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
-const BlogList = ({ user, blogs, handleLogout, addBlog, deleteBlog, updateBlog, blogFormRef }) => {
+const BlogList = ({ blogFormRef }) => {
+  const blogs = useSelector((state) => state.blogs)
+
+  const margin = {
+    marginTop: 10,
+  }
+
+  const listStyle = {
+    listStyleType: 'none', // Poistaa pisteet
+    paddingLeft: 30, // Poistaa vasemman puolen sisennykset
+  }
+
+  const marginHeader = {
+    marginTop: 30,
+    marginBottom: 20,
+    paddingLeft: 30,
+  }
+
   return (
     <>
-      <div>
-        <p>
-          {/* Showing logged in user and logout button */}
-          {user.name} is logged in.
-          <button onClick={handleLogout} type="submit">Logout</button>
-        </p>
-
+      <div style={margin}>
         {/* Using togglable component to show blog form for adding new blogs. */}
-        <Togglable buttonLabel='Add new blog' ref={blogFormRef}>
-          <BlogForm createBlog={addBlog} />
+        <Togglable buttonLabel="Add new blog" ref={blogFormRef}>
+          <BlogForm />
         </Togglable>
-
       </div>
-      <h3>Blog list</h3>
-      <ul>
-        {/* Sorting blogs to the list according likes count. */}
-        {blogs.sort((a, b) => b.likes - a.likes).map((blog, i) =>
-          <Blog
-            key={blog.id}
-            blog={blog}
-            deleteBlog={() => deleteBlog(blog.id)}
-            addLike={() => updateBlog(blog.id)}
-            user={user}
-          />
+      <h3 style={marginHeader}>Blog list</h3>
+      <ul style={listStyle}>
+        {blogs.length === 0 ? (
+          <li>No added blogs</li>
+        ) : (
+          blogs
+            .slice()
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => (
+              <li className="blogStyle" key={blog.id}>
+                <Link to={`/blog/${blog.id}`}>
+                  <b>Title: </b> {blog.title}, <b>Author: </b> {blog.author}
+                </Link>
+              </li>
+            ))
         )}
       </ul>
     </>
   )
 }
 
+BlogList.propTypes = {
+  blogFormRef: PropTypes.object.isRequired,
+}
 // exports
 export default BlogList

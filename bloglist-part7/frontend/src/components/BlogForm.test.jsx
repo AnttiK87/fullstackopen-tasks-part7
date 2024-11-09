@@ -6,7 +6,6 @@ import userEvent from '@testing-library/user-event'
 import BlogForm from './BlogForm'
 
 test('createBlog gets correct values', async () => {
-
   const createBlog = vi.fn()
 
   render(<BlogForm createBlog={createBlog} />)
@@ -25,5 +24,4 @@ test('createBlog gets correct values', async () => {
   expect(createBlog.mock.calls[0][0].title).toBe('Testi Blogi')
   expect(createBlog.mock.calls[0][0].author).toBe('Matti Möttönen')
   expect(createBlog.mock.calls[0][0].url).toBe('https://www.testihöpöhöpöä.com')
-
 })

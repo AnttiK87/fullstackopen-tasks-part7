@@ -7,9 +7,20 @@ const User = require('../models/user')
 
 // Get all users
 usersRouter.get('/', async (request, response) => {
-  const users = await User
-    .find({}).populate('blogs', { title: 1, likes: 1 })
+  const users = await User.find({}).populate('blogs', { title: 1, likes: 1 })
   response.json(users)
+})
+
+// get specific user
+usersRouter.get('/:id', async (request, response) => {
+  const users = await User.findById(request.params.id).populate('blogs', {
+    title: 1,
+  })
+  if (users) {
+    return response.json(users)
+  } else {
+    return response.status(404).end()
+  }
 })
 
 // Add user
@@ -27,7 +38,7 @@ usersRouter.post('/', async (request, response) => {
 
   if (password.length < 3) {
     return response.status(400).json({
-      error: 'Password is too short!'
+      error: 'Password is too short!',
     })
   }
 

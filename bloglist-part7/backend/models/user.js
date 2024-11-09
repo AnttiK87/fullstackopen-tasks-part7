@@ -9,15 +9,15 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
     minlength: 3,
-    unique: true // username must be unique
+    unique: true, // username must be unique
   },
   name: String,
   passwordHash: String,
   blogs: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Blog'
-    }
+      ref: 'Blog',
+    },
   ],
 })
 
@@ -28,7 +28,7 @@ userSchema.set('toJSON', {
     delete returnedObject._id
     delete returnedObject.__v
     delete returnedObject.passwordHash
-  }
+  },
 })
 
 // Creating the User model using the schema

@@ -1,82 +1,79 @@
 //for rendering form to add blogs
 
 //dependencies
-import { useState } from 'react'
-import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer.js'
+import { Form, Button } from 'react-bootstrap'
 
-const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+const BlogForm = () => {
+  const dispatch = useDispatch()
 
   //function for sending form content and calling creteBlog
   const addBlog = (event) => {
     event.preventDefault()
 
-    createBlog ({
-      title: title,
-      author: author,
-      url: url,
-    })
+    const { title, author, url } = event.target
 
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    const blog = {
+      title: title.value,
+      author: author.value,
+      url: url.value,
+    }
+
+    dispatch(createBlog(blog))
+
+    event.target.reset()
+  }
+
+  const marginBottom = {
+    marginBottom: 10,
+    marginLeft: 0,
+    width: 80,
+  }
+
+  const margin = {
+    marginLeft: 30,
+    marginTop: 30,
   }
 
   // rendering the form
   return (
-    <div>
+    <div style={margin}>
       <h3>Add new blog to the list</h3>
-      <form onSubmit={addBlog}>
-        <div className="form-group">
-          <label htmlFor="title">Title:</label>
-          <input
+      <Form onSubmit={addBlog}>
+        <Form.Group className="form-group">
+          <Form.Label htmlFor="title">Title:</Form.Label>
+          <Form.Control
             type="text"
             id="title"
-            data-testid='title'
-            value={title}
+            data-testid="title"
             name="title"
-            onChange={event => setTitle(event.target.value)}
-            placeholder='title'
+            placeholder="title"
           />
-        </div>
+        </Form.Group>
 
-        <div className="form-group">
-          <label htmlFor="author">Author:</label>
-          <input
+        <Form.Group className="form-group">
+          <Form.Label htmlFor="author">Author:</Form.Label>
+          <Form.Control
             type="text"
             id="author"
-            data-testid='author'
-            value={author}
+            data-testid="author"
             name="author"
-            onChange={event => setAuthor(event.target.value)}
-            placeholder='author'
+            placeholder="author"
           />
-        </div>
+        </Form.Group>
 
-        <div className="form-group">
-          <label htmlFor="url">URL:</label>
-          <input
-            type="text"
-            id="url"
-            data-testid='url'
-            value={url}
-            name="url"
-            onChange={event => setUrl(event.target.value)}
-            placeholder='url'
-          />
-        </div>
+        <Form.Group className="form-group">
+          <Form.Label htmlFor="url">URL:</Form.Label>
+          <Form.Control type="text" id="url" data-testid="url" name="url" placeholder="url" />
+        </Form.Group>
         <p></p>
-        <button type="submit">Create</button>
-      </form>
+        <Button variant="primary" className="Button" style={marginBottom} type="submit">
+          Create
+        </Button>
+      </Form>
     </div>
   )
-}
-
-// setting the prop types (createBlog is reguired an it must be a function)
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired
 }
 
 // exports

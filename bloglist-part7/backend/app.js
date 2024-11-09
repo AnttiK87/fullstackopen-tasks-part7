@@ -8,6 +8,7 @@ const app = express()
 const cors = require('cors')
 const blogsRouter = require('./controllers/blogs')
 const usersRouter = require('./controllers/users')
+const commentsRouter = require('./controllers/comments')
 const loginRouter = require('./controllers/login')
 const middleware = require('./utils/middleware')
 const logger = require('./utils/logger')
@@ -19,7 +20,8 @@ mongoose.set('strictQuery', false)
 // Connection to MongoDB
 logger.info('connecting to', config.MONGODB_URI)
 
-mongoose.connect(config.MONGODB_URI)
+mongoose
+  .connect(config.MONGODB_URI)
   .then(() => {
     logger.info('connected to MongoDB')
   })
@@ -38,6 +40,7 @@ app.use(express.static('dist'))
 // Setting main API-routes
 app.use('/api/blogs', blogsRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/comments', commentsRouter)
 app.use('/api/login', loginRouter)
 
 // Setting route for testing

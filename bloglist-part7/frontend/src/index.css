@@ -1,63 +1,193 @@
-/*styles for notifications*/
+/*styles for blog application*/
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex-grow: 1; /* Täyttää kaiken jäljellä olevan tilan */
+  overflow-y: auto; /* Jos sisältö ei mahdu ruudulle, lisää scrollaus */
+}
+
+.footer {
+  margin-top: auto; /* Varmistaa, että footer menee alas */
+}
+
 .notification {
-    background: lightgrey;
-    font-size: 20px;
-    border-style: solid;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    margin-left: 20px;
-    margin-right: 20px;
-    display: inline-block;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  max-width: 90%;
+  min-width: 90%; /* Maksimikoko on 90 % käytettävissä olevasta leveydestä */
+  margin: 20px auto; /* Keskittää vaakasuunnassa */
+  display: inline-flex;
+  flex-wrap: wrap; /* Jos sisältö ylittyy, se kääritään */
+  justify-content: center; /* Keskittää sisällön vaakasuunnassa */
+  align-items: center; /* Keskittää sisällön pystysuunnassa */
 }
 
 .success {
-    color: rgb(0, 165, 27);
+  color: rgb(0, 165, 27);
 }
 
 .error {
-    color: red;
+  color: red;
 }
 
 .form-group {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-    width: 300px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  width: 300px;
 }
-  
+
 label {
-    width: 80px; /* Kiinteä leveys, jotta kaikki labelit ovat samassa linjassa */
-    text-align: right; /* Tasoittaa tekstin loppuun */
-    padding-right: 10px;
+  width: 80px;
+  text-align: right;
+  padding-right: 10px;
 }
-  
+
 input {
-    flex: 1; /* Input-kenttä vie jäljelle jäävän tilan */
-    padding: 2px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+  flex: 1;
+  padding: 2px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 button {
-    margin-left: 10px;
-    margin-bottom: 10px;
+  margin-left: 10px;
 }
 
 .blogStyle {
-    padding-top: 10px;
-    border: 2px solid black;
-    border-radius: 5px;
-    width: 400px;
-    text-align: center;
-    margin-bottom: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  border: 2px solid black;
+  border-radius: 5px;
+  width: 400px;
+  text-align: center;
+  margin-bottom: 5px;
 }
 
 .lastStyle {
-    margin-bottom: 5px;
+  margin-bottom: 25px;
 }
 
-.delButton{
-    color: red;
-    font-style: bold;
+.delButton {
+  margin-left: 10px;
+  background-color: red;
+  color: white;
+  width: 80px;
+  border-color: black;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #757a6f;
+}
+
+.blogStyle:nth-child(odd) {
+  background-color: #a5a58d; /* Vaalean harmaa */
+}
+
+.Button {
+  width: 100px;
+  margin-bottom: 10px;
+  margin-left: 0;
+  background-color: rgb(151, 151, 151);
+  border-color: black;
+}
+
+.Button:hover {
+  background-color: rgb(69, 69, 69);
+  border-color: black;
+}
+
+.Button:active {
+  background-color: rgb(27, 27, 27) !important;
+  border-color: darkgray !important;
+}
+
+.delButton:hover {
+  background-color: rgb(198, 1, 1);
+  border-color: black;
+}
+
+.delButton:active {
+  background-color: rgb(119, 0, 0) !important;
+  border-color: red !important;
+}
+
+.button-as-link {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.button-as-link:hover {
+  color: #757a6f;
+  background: none;
+}
+
+.buttonWidth {
+  width: 100px;
+}
+
+@media (min-width: 990px) {
+  /* Tämä tyyli otetaan käyttöön vain isoilla näytöillä */
+  .nav-container {
+    background-color: #a5a58d;
+    padding: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .lines {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+  }
+}
+
+@media (max-width: 990px) {
+  .container {
+    margin: 0px;
+    min-width: 100%;
+    padding: 0px;
+  }
+
+  .blogStyle {
+    display: flex !important;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 2px solid black;
+    border-radius: 5px;
+    max-width: 90% !important;
+    text-align: center;
+    margin-bottom: 5px;
+    padding: 10px;
+  }
+
+  .form-group {
+    align-items: center;
+    margin-bottom: 10px;
+    max-width: 90%;
+  }
+
+  .paddingLeft {
+    padding-left: 0 !important;
+  }
 }
