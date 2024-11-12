@@ -12,8 +12,8 @@ const useLogout = () => {
     try {
       // Clear local storage
       window.localStorage.clear()
-      const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-      console.log(loggedUserJSON)
+      //const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+      //console.log(loggedUserJSON)
 
       // Set state
       dispatch(clearUser())

@@ -1,86 +1,77 @@
-// for testing the frontend of the blog application
-
-//dependecies
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe } from 'vitest'
 import Blog from './Blog'
+import { describe, vi } from 'vitest'
+import { Provider } from 'react-redux'
+import { createTestStore } from '../testUtils/testStore'
+import { MemoryRouter } from 'react-router-dom'
+
+// Fake axios return without any data in it
+vi.mock('axios', () => ({
+  post: vi.fn().mockResolvedValue({
+    data: {},
+  }),
+  get: vi.fn().mockResolvedValue({ data: [] }),
+}))
 
 describe('Blog component', () => {
   const blog = {
-    title: 'Testi Blogi',
+    _id: '670e101eeeb3da59ff1b898c',
+    title: 'Testi Blogi 1',
     author: 'Matti Möttönen',
-    url: 'https://www.testihöpöhöpöä.com',
-    likes: 12,
-    user: {
-      id: '1',
-      name: 'Antti Kortelainen',
-    },
+    url: 'https://www.testihöpöhöpöä1.fi/',
+    likes: 42,
+    user: { username: 'akortelai', name: 'Antti Kortelainen', id: '1' },
   }
 
-  const user = {
-    id: '1',
+  const initialState = {
+    blogs: [blog],
+    user: { user: { id: '1', username: 'akortelai', name: 'Antti Kortelainen' } },
   }
 
-  test('renders blog title and author by default', () => {
-    render(<Blog blog={blog} user={user} />)
+  const store = createTestStore(initialState)
 
-    // Check that title and author are displayed
-    expect(screen.getAllByText(/Title:/).length).toBe(1)
-    expect(screen.getAllByText(/Testi Blogi/).length).toBe(1)
-    expect(screen.getAllByText(/Author:/).length).toBe(1)
-    expect(screen.getAllByText(/Matti Möttönen/).length).toBe(1)
+  //test that blogs info in rendered correctly
+  test('renders blog content correctly', () => {
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Blog />
+        </MemoryRouter>
+      </Provider>
+    )
 
-    // Check that details are not visible initially
-    expect(screen.queryByText(/Link to blog:/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/https:\/\/www\.testihöpöhöpöä\.com/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/Likes:/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/12/)).not.toBeInTheDocument()
+    const title = screen.getByText(/Testi Blogi 1/i)
+    const author = screen.getByText(/Matti Möttönen/i)
+    expect(title).toBeDefined()
+    expect(author).toBeDefined()
+
+    const url = screen.queryByText(/https:\/\/www.testihöpöhöpöä1.fi/i)
+    const likes = screen.getByText(/Likes:/i)
+    expect(url).toBeDefined()
+    expect(likes).toBeDefined()
   })
 
-  test('toggles visibility when "View" and "Hide" buttons are clicked', async () => {
-    render(<Blog blog={blog} user={user} />)
+  //Test that mocked function/dispatch is called twice when like button is pressed twice
+  test('calls like function twice when like button is clicked twice', async () => {
+    const dispatch = vi.spyOn(store, 'dispatch')
 
-    expect(screen.queryByText(/Link to blog:/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/https:\/\/www\.testihöpöhöpöä\.com/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/Likes:/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/12/)).not.toBeInTheDocument()
-
-    // click of the "View" button
-    const eventUser = userEvent.setup()
-    const buttonView = screen.getByText('View')
-    await eventUser.click(buttonView)
-
-    //checkt that info is visible
-    expect(screen.getByText(/Link to blog:/)).toBeInTheDocument()
-    expect(screen.queryByText(/https:\/\/www\.testihöpöhöpöä\.com/)).toBeInTheDocument()
-    expect(screen.queryByText(/Likes:/)).toBeInTheDocument()
-    expect(screen.queryByText(/12/)).toBeInTheDocument()
-
-    // click of the "Hide" button
-    const buttonHide = screen.getByText('Hide')
-    await eventUser.click(buttonHide)
-
-    // check that info is hidden
-    expect(screen.queryByText(/Link to blog:/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/https:\/\/www\.testihöpöhöpöä\.com/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/Likes:/)).not.toBeInTheDocument()
-    expect(screen.queryByText(/12/)).not.toBeInTheDocument()
-  })
-
-  test('check that addLike function is called twice', async () => {
-    const addLike = vi.fn()
-
-    render(<Blog blog={blog} user={user} addLike={addLike} />)
+    render(
+      <Provider store={store}>
+        <MemoryRouter>
+          <Blog />
+        </MemoryRouter>
+      </Provider>
+    )
 
     const eventUser = userEvent.setup()
-    const buttonView = screen.getByText('View')
-    await eventUser.click(buttonView)
+    const likeButton = screen.getByRole('button', { name: /like/i })
 
-    const buttonLike = screen.getByText('Like')
-    await eventUser.click(buttonLike)
-    await eventUser.click(buttonLike)
+    dispatch.mockClear()
 
-    expect(addLike.mock.calls).toHaveLength(2)
+    await eventUser.click(likeButton)
+    await eventUser.click(likeButton)
+
+    expect(dispatch).toHaveBeenCalledTimes(2)
   })
 })

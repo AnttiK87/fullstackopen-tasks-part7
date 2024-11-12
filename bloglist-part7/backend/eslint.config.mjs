@@ -1,11 +1,10 @@
-//eslint configurations
+// eslint.config.js
 
-//dependensies
 import globals from 'globals'
 import js from '@eslint/js'
+import prettierPlugin from 'eslint-plugin-prettier' // import Prettier-plugin
 
 export default [
-  // recommended rules for JavaScript
   js.configs.recommended,
   {
     files: ['**/*.js'],
@@ -18,7 +17,15 @@ export default [
     },
   },
   {
-    // directories to ignore
     ignores: ['dist/**', 'build/**'],
+  },
+  {
+    // Prettier-config
+    plugins: {
+      prettier: prettierPlugin, // prettier plugin
+    },
+    rules: {
+      'prettier/prettier': 'error', //prettier rules as errors
+    },
   },
 ]

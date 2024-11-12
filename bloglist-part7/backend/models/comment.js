@@ -11,9 +11,8 @@ const commentSchema = mongoose.Schema({
     minlength: 3,
   },
   blog: {
-    // Muutettu blogs -> blog, koska kommentti liittyy yhteen blogiin
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Blog', // Viittaa Blog-malliin
+    ref: 'Blog',
   },
 })
 

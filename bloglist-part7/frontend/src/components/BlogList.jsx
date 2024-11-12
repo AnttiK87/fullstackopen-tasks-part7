@@ -1,4 +1,4 @@
-//for rendering the main screen of blog application
+//component for rendering the "main screen" of blog application
 
 //dependencies
 import Togglable from './Togglable'
@@ -7,16 +7,15 @@ import { useSelector } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 
-const BlogList = ({ blogFormRef }) => {
-  const blogs = useSelector((state) => state.blogs)
-
+const BlogList = ({ /*props*/ blogFormRef }) => {
+  /*TODO refactor style to .css file*/
   const margin = {
     marginTop: 10,
   }
 
   const listStyle = {
-    listStyleType: 'none', // Poistaa pisteet
-    paddingLeft: 30, // Poistaa vasemman puolen sisennykset
+    listStyleType: 'none',
+    paddingLeft: 30,
   }
 
   const marginHeader = {
@@ -25,6 +24,11 @@ const BlogList = ({ blogFormRef }) => {
     paddingLeft: 30,
   }
 
+  //get blogs state
+  const blogs = useSelector((state) => state.blogs)
+  //console.log(blogs)
+
+  // render the blog list
   return (
     <>
       <div style={margin}>

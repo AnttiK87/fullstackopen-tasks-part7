@@ -1,8 +1,10 @@
-// userReducer.js
+//reducer for blogs
+//depedencies
 import { createSlice } from '@reduxjs/toolkit'
 import userService from '../services/users'
 import { showMessage } from './messageReducer'
 
+//create slice
 const userSlice = createSlice({
   name: 'user',
   initialState: {
@@ -40,6 +42,7 @@ const userSlice = createSlice({
   },
 })
 
+//exports
 export const {
   setUsername,
   setPassword,
@@ -50,6 +53,7 @@ export const {
   appendUser,
 } = userSlice.actions
 
+// Setting users at db to current state with error handling
 export const initializeUsers = () => {
   return async (dispatch) => {
     try {
@@ -57,7 +61,7 @@ export const initializeUsers = () => {
       //console.log(users)
       dispatch(setUsers(users))
     } catch (error) {
-      // Käsittele virhe ja näytä käyttäjälle virheilmoitus
+      // handle possible error and show error message
       dispatch(
         showMessage(
           {
@@ -71,6 +75,7 @@ export const initializeUsers = () => {
   }
 }
 
+//get user by id
 export const getUser = (id) => {
   return async (dispatch) => {
     try {
@@ -78,7 +83,7 @@ export const getUser = (id) => {
       //console.log(users)
       dispatch(setSelectedUser(user))
     } catch (error) {
-      // Käsittele virhe ja näytä käyttäjälle virheilmoitus
+      // handle possible error and show error message
       dispatch(
         showMessage(
           {
@@ -92,7 +97,7 @@ export const getUser = (id) => {
   }
 }
 
-// Creating new blog and setting it to the state with error handling
+// Creating new user and setting it to the state with error handling
 export const createUser = (content) => {
   return async (dispatch) => {
     try {
@@ -108,8 +113,9 @@ export const createUser = (content) => {
           5
         )
       )
-      return true // Palautetaan true, jos käyttäjän luonti onnistui
+      return true // return true for navigating after registration of user
     } catch (error) {
+      // TODO: add better error handing for validation errors
       dispatch(
         showMessage(
           {
@@ -119,9 +125,10 @@ export const createUser = (content) => {
           5
         )
       )
-      return false // Palautetaan false, jos käyttäjän luonti epäonnistui
+      return false // return false if adding user was not completed succesfully
     }
   }
 }
 
+//export
 export default userSlice.reducer

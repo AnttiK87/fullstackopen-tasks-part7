@@ -1,10 +1,22 @@
+//component for rendering form for registering new user
 //dependencies
 import { useDispatch } from 'react-redux'
 import { createUser } from '../reducers/userReducer.js'
 import { Form, Button } from 'react-bootstrap'
 import PropTypes from 'prop-types'
 
-const RegisterForm = ({ setLoginVisible, setRegisterVisible }) => {
+const RegisterForm = ({ /*props*/ setLoginVisible, setRegisterVisible }) => {
+  /*TODO refactor style to .css file*/
+  const margin = {
+    marginLeft: 60,
+    marginTop: 30,
+  }
+
+  const marginBottom = {
+    marginBottom: 20,
+  }
+
+  //set dispatch
   const dispatch = useDispatch()
 
   //function for sending form content and calling creteBlog
@@ -19,28 +31,21 @@ const RegisterForm = ({ setLoginVisible, setRegisterVisible }) => {
       password: password.value,
     }
 
-    // Tarkistetaan, onnistuiko dispatchin suoritus
+    // check if creating of user were succesful
     const success = await dispatch(createUser(user))
 
+    //show log in screen if registration were completed
     if (success) {
       setLoginVisible(true)
       setRegisterVisible(false)
       event.target.reset()
     } else {
+      //handle error
       console.error('User creation failed')
-      // Voit lisätä tähän lisätoimenpiteitä virhetilanteessa
     }
   }
 
-  const margin = {
-    marginLeft: 60,
-    marginTop: 30,
-  }
-
-  const marginBottom = {
-    marginBottom: 20,
-  }
-
+  // rendering registration form
   return (
     <div style={margin}>
       <h2 style={marginBottom}>Register new user</h2>
@@ -78,6 +83,7 @@ const RegisterForm = ({ setLoginVisible, setRegisterVisible }) => {
   )
 }
 
+//proptypes check
 RegisterForm.propTypes = {
   setLoginVisible: PropTypes.func.isRequired,
   setRegisterVisible: PropTypes.func.isRequired,

@@ -1,12 +1,15 @@
+//reducer for comments of the blogs
+//depebdencies
 import { createSlice } from '@reduxjs/toolkit'
 import commentService from '../services/comments'
 import { showMessage } from './messageReducer'
 
+//create slice
 const commentSlice = createSlice({
-  name: 'comment', // Voit halutessasi vaihtaa tämänkin, mutta se ei ole virheellistä
+  name: 'comment',
   initialState: {
-    comment: '', // Yksittäinen kommentti, jota voidaan muokata
-    comments: [], // Lista kaikista kommenteista
+    comment: '',
+    comments: [],
   },
   reducers: {
     setComment(state, action) {
@@ -23,12 +26,14 @@ const commentSlice = createSlice({
 
 export const { setComment, setComments, appendComment } = commentSlice.actions
 
+// Setting comments at db to current state with error handling
 export const initializeComments = () => {
   return async (dispatch) => {
     try {
-      const comments = await commentService.getAll() // Oletettavasti tämä metodi hakee kaikki kommentit
+      const comments = await commentService.getAll()
       dispatch(setComments(comments))
     } catch (error) {
+      // handle possible error and show error message
       dispatch(
         showMessage(
           {
@@ -42,13 +47,14 @@ export const initializeComments = () => {
   }
 }
 
+// Creating new comment and setting it to the state with error handling
 export const createComment = (content) => {
   return async (dispatch) => {
     try {
-      const newComment = await commentService.create(content) // Oletettavasti tämä metodi luo uuden kommentin
+      const newComment = await commentService.create(content)
       dispatch(appendComment(newComment))
 
-      // Näytä onnistunut viesti
+      // show message comment added
       dispatch(
         showMessage(
           {
@@ -59,6 +65,7 @@ export const createComment = (content) => {
         )
       )
     } catch (error) {
+      // handle error and show error message
       dispatch(
         showMessage(
           {
@@ -72,4 +79,5 @@ export const createComment = (content) => {
   }
 }
 
-export default commentSlice.reducer // Exportaa kommenttien reducer
+//export
+export default commentSlice.reducer

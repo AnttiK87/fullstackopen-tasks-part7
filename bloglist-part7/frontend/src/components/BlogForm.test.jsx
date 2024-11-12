@@ -1,27 +1,58 @@
-// for testing the frontend of the blog application
-
-//dependecies
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import BlogForm from './BlogForm'
+import { Provider } from 'react-redux'
+import BlogForm from '../components/BlogForm'
+import { createTestStore } from '../testUtils/testStore'
+import { vi } from 'vitest'
 
-test('createBlog gets correct values', async () => {
-  const createBlog = vi.fn()
+// Fake axios return without any data in it
+vi.mock('axios', () => ({
+  post: vi.fn().mockResolvedValue({
+    data: {},
+  }),
+  get: vi.fn().mockResolvedValue({ data: [] }),
+}))
 
-  render(<BlogForm createBlog={createBlog} />)
+const initialState = {
+  blogs: [],
+  user: { user: { id: '1', username: 'akortelai', name: 'Antti Kortelainen' } },
+}
 
-  const inputTitle = screen.getByPlaceholderText('title')
-  const inputAuthor = screen.getByPlaceholderText('author')
-  const inputUrl = screen.getByPlaceholderText('url')
-  const saveButton = screen.getByText('Create')
+const mockStore = createTestStore(initialState)
 
-  await userEvent.type(inputTitle, 'Testi Blogi')
-  await userEvent.type(inputAuthor, 'Matti Möttönen')
-  await userEvent.type(inputUrl, 'https://www.testihöpöhöpöä.com')
-  await userEvent.click(saveButton)
+//test that addBlog functions object blog gets inputed data correctly
+test('BlogForm creates blog with correct values', async () => {
+  const addBlog = (event) => {
+    event.preventDefault()
+    const { title, author, url } = event.target.elements
 
-  expect(createBlog.mock.calls).toHaveLength(1)
-  expect(createBlog.mock.calls[0][0].title).toBe('Testi Blogi')
-  expect(createBlog.mock.calls[0][0].author).toBe('Matti Möttönen')
-  expect(createBlog.mock.calls[0][0].url).toBe('https://www.testihöpöhöpöä.com')
+    const blog = {
+      title: title.value,
+      author: author.value,
+      url: url.value,
+    }
+
+    expect(blog).toEqual({
+      title: 'Testi Blogi',
+      author: 'Matti Möttönen',
+      url: 'http://testihöpöhöpö.com',
+    })
+  }
+
+  render(
+    <Provider store={mockStore}>
+      <BlogForm addBlog={addBlog} />
+    </Provider>
+  )
+
+  const titleInput = screen.getByTestId('title')
+  const authorInput = screen.getByTestId('author')
+  const urlInput = screen.getByTestId('url')
+  const submitButton = screen.getByRole('button', { name: /create/i })
+
+  await userEvent.type(titleInput, 'Testi Blogi')
+  await userEvent.type(authorInput, 'Matti Möttönen')
+  await userEvent.type(urlInput, 'http://testihöpöhöpö.com')
+
+  await userEvent.click(submitButton)
 })

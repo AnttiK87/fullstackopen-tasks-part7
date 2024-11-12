@@ -1,4 +1,5 @@
-// components/Menu.js
+//Navigation bar component
+//dependencies
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
@@ -6,11 +7,9 @@ import useLogout from '../hooks/useLogout'
 import { Navbar, Nav, Button } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom'
 
-const Menu = ({ setLoginVisible, setRegisterVisible }) => {
-  const user = useSelector((state) => state.user.user)
-  const { handleLogout } = useLogout()
-  const navigate = useNavigate()
-
+//
+const Menu = ({ /*props*/ setLoginVisible, setRegisterVisible }) => {
+  /*TODO refactor style to .css file*/
   const containerStyle = {
     backgroundColor: '#a5a58d',
     padding: 20,
@@ -44,10 +43,19 @@ const Menu = ({ setLoginVisible, setRegisterVisible }) => {
     marginLeft: 10,
   }
 
+  //set navigate
+  const navigate = useNavigate()
+  //get user state
+  const user = useSelector((state) => state.user.user)
+  // get handleLogout
+  const { handleLogout } = useLogout()
+
+  //show login and register buttons on navbar if user is not logged in
   if (!user) {
     return (
       <div style={containerStyle2}>
         <button
+          name="openLogin"
           className="button-as-link"
           onClick={() => {
             navigate('/')
@@ -71,6 +79,7 @@ const Menu = ({ setLoginVisible, setRegisterVisible }) => {
     )
   }
 
+  //render navbar resposive navbar with bootstrap
   return (
     <Navbar style={containerStyle} collapseOnSelect expand="lg">
       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -113,9 +122,11 @@ const Menu = ({ setLoginVisible, setRegisterVisible }) => {
   )
 }
 
+//proptypes check
 Menu.propTypes = {
   setLoginVisible: PropTypes.func.isRequired,
   setRegisterVisible: PropTypes.func.isRequired,
 }
 
+//export
 export default Menu

@@ -1,8 +1,7 @@
 import globals from 'globals'
 import pluginJs from '@eslint/js'
 import pluginReact from 'eslint-plugin-react'
-//import eslintPluginPrettier from 'eslint-plugin-prettier' // Lisää tämä
-//import eslintConfigPrettier from 'eslint-config-prettier' // Lisää tämä
+import prettierPlugin from 'eslint-plugin-prettier' // import Prettier-plugin
 
 export default [
   {
@@ -11,41 +10,37 @@ export default [
       globals: {
         ...globals.browser,
         ...globals.node,
-        expect: 'readonly', // määrittele globaalit
+        expect: 'readonly',
         test: 'readonly',
         vi: 'readonly',
       },
       parserOptions: {
-        ecmaVersion: 'latest', // Uusin ECMAScript-versio
-        sourceType: 'module', // Käytetään moduuleja
+        ecmaVersion: 'latest',
+        sourceType: 'module',
         ecmaFeatures: {
-          jsx: true, // Sallitaan JSX
+          jsx: true,
         },
       },
     },
     settings: {
       react: {
-        version: 'detect', // Tämä kertoo ESLintille, että Reactin versio tunnistetaan automaattisesti paketeista
+        version: 'detect',
       },
     },
     plugins: {
       react: pluginReact,
-      //prettier: eslintPluginPrettier, // Lisää Prettier plugin
+      prettier: prettierPlugin, // prettier plugin
     },
     rules: {
-      // ESLintin suositellut säännöt
       ...pluginJs.configs.recommended.rules,
-      // Reactin suositellut säännöt (flat-konfiguraatiosta)
       ...pluginReact.configs.flat.recommended.rules,
-      // Omat lisäsäännöt
-      'react/jsx-no-undef': 'error', // Varmistaa, että JSX-komponentit eivät ole määrittelemättömiä
-      'react/react-in-jsx-scope': 'off', // Ei tarvitse aina olla JSX-syntaksissa
-      'react/prop-types': 'warn', // tarkistetaan prop-tyyppejä
-      'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }], // Hälyttää käyttämättömistä muuttujista
+      'react/jsx-no-undef': 'error',
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'warn',
+      'no-unused-vars': ['warn', { vars: 'all', args: 'after-used', ignoreRestSiblings: false }],
       'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-      //'prettier/prettier': 'error', // Lisää tämä, jotta Prettierin virheet tunnistetaan ESLintissä
+      'prettier/prettier': 'error', //prettier rules as errors
     },
   },
-  //eslintConfigPrettier, // Lisää tämä, jotta Prettierin säännöt eivät mene ristiriitaan muiden sääntöjen kanssa
-  { ignores: ['dist/**', 'build/**'] }, // Ignoroi build-kansiot
+  { ignores: ['dist/**', 'build/**'] },
 ]

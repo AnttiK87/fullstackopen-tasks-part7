@@ -1,9 +1,10 @@
-//reducer for anecdotes
-
+//reducer for blogs
+//depedencies
 import { createSlice } from '@reduxjs/toolkit'
 import blogService from '../services/blogs'
 import { showMessage } from './messageReducer'
 
+//create slice
 const blogSlice = createSlice({
   name: 'blogs',
   initialState: [],
@@ -35,7 +36,7 @@ export const initializeBlogs = () => {
       const blogs = await blogService.getAll()
       dispatch(setBlogs(blogs))
     } catch (error) {
-      // Käsittele virhe ja näytä käyttäjälle virheilmoitus
+      // handle possible error and show error message
       dispatch(
         showMessage(
           {
@@ -56,7 +57,7 @@ export const createBlog = (content) => {
       const newBlog = await blogService.create(content)
       dispatch(appendBlog(newBlog))
 
-      // Näytä onnistunut viesti
+      // show message blog added
       dispatch(
         showMessage(
           {
@@ -67,7 +68,8 @@ export const createBlog = (content) => {
         )
       )
     } catch (error) {
-      // Käsittele virhe ja näytä käyttäjälle virheilmoitus
+      // handle error and show error message
+      // TODO: add better error handing for validation errors
       dispatch(
         showMessage(
           {
@@ -88,7 +90,6 @@ export const like = (content) => {
       const updatedBlog = await blogService.update(content)
       dispatch(updateBlog(updatedBlog))
 
-      // Näytä onnistunut viesti
       dispatch(
         showMessage(
           {
@@ -99,7 +100,6 @@ export const like = (content) => {
         )
       )
     } catch (error) {
-      // Käsittele virhe, esimerkiksi näytä käyttäjälle virheilmoitus
       dispatch(
         showMessage(
           {
@@ -120,7 +120,6 @@ export const remove = (content) => {
       await blogService.remove(content)
       dispatch(deleteBlog(content))
 
-      // Onnistunut poistoilmoitus
       dispatch(
         showMessage({ text: `Blog ${content.title} deleted successfully!`, type: 'success' }, 10)
       )
@@ -130,10 +129,8 @@ export const remove = (content) => {
           ? `Failed to delete the blog: ${error.message}`
           : `An unexpected error occurred: ${error.message}`
 
-      // Virheilmoituksen näyttäminen
       dispatch(showMessage({ text: errorMessage, type: 'error' }, 10))
 
-      // Varmuuden vuoksi poistetaan blogi frontendistä
       if (error.response && error.response.status === 404) {
         dispatch(deleteBlog(content))
       }
@@ -141,4 +138,5 @@ export const remove = (content) => {
   }
 }
 
+//export
 export default blogSlice.reducer

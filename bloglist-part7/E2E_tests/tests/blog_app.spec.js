@@ -2,7 +2,13 @@
 
 //dependencies
 const { test, expect, describe, beforeEach } = require('@playwright/test')
-const { loginWith, createBlog, addLikes, likesToArray } = require('./helper')
+const {
+  loginWith,
+  createBlog,
+  addLikes,
+  likesToArray,
+  createBlogAfter,
+} = require('./helper')
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -62,10 +68,7 @@ describe('Blog app', () => {
     test('a new blog can be deleted', async ({ page }) => {
       await createBlog(page, 'a test blog to be deleted')
 
-      await page
-        .getByText('Title: a test blog to be deleted')
-        .getByRole('button', { name: 'View' })
-        .click()
+      await page.getByRole('link', { name: 'Title: a test blog to be' }).click()
 
       page.on('dialog', async (dialog) => {
         console.log(dialog.message())
@@ -81,8 +84,8 @@ describe('Blog app', () => {
     describe('After blogs were added', () => {
       beforeEach(async ({ page }) => {
         await createBlog(page, 'first test blog created')
-        await createBlog(page, 'second test blog created')
-        await createBlog(page, 'Third test blog created')
+        await createBlogAfter(page, 'second test blog created')
+        await createBlogAfter(page, 'Third test blog created')
       })
 
       test('like can be added to one of the blogs', async ({ page }) => {
@@ -132,10 +135,7 @@ describe('Blog app', () => {
     test('delete button is visible for user who added the blog', async ({
       page,
     }) => {
-      await page
-        .getByText('Title: a test for delete button')
-        .getByRole('button', { name: 'View' })
-        .click()
+      await page.getByRole('link', { name: 'a test for delete button' }).click()
 
       await expect(page.getByRole('button', { name: 'Delete' })).toBeVisible()
     })
@@ -145,10 +145,7 @@ describe('Blog app', () => {
 
       await loginWith(page, 'mmotton', 'salainen')
 
-      await page
-        .getByText('Title: a test for delete button')
-        .getByRole('button', { name: 'View' })
-        .click()
+      await page.getByRole('link', { name: 'a test for delete button' }).click()
 
       await expect(
         page.getByRole('button', { name: 'Delete' }),

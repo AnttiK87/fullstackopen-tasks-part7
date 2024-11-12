@@ -1,3 +1,6 @@
+//component for rendering info of the selected blog
+
+//dependencies
 import { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { like, remove } from '../reducers/blogReducer.js'
@@ -6,6 +9,7 @@ import { createComment, initializeComments } from '../reducers/commentReducer'
 import { Form, Button } from 'react-bootstrap'
 
 const Blog = () => {
+  /*TODO refactor styles to .css file*/
   const listStyle = {
     marginTop: 30,
     marginBottom: 0,
@@ -37,25 +41,34 @@ const Blog = () => {
     marginLeft: 30,
   }
 
+  //get blog id from url
   const { id } = useParams()
+
+  //set dispatch and navigate
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  //get blogs state
   const blogs = useSelector((state) => state.blogs)
+  //get find this blogs information
   const blog = blogs.find((blog) => blog.id === id)
 
+  //get comments state
   const comments = useSelector((state) => state.comment.comments)
+  //filter this blogs comments
   const commentsForBlog = blog ? comments.filter((comment) => comment.blog.id === blog.id) : []
 
+  //get user state
   const user = useSelector((state) => state.user.user)
 
+  //state variable for delete button
   const [deleteVisible, setDeleteVisible] = useState(false)
 
   useEffect(() => {
-    // Alusta kommentit aina komponentin latautuessa
+    // innitialize comments
     dispatch(initializeComments())
 
-    // Navigoi kotisivulle 2 sekunnin viiveellä, jos käyttäjä ei ole kirjautunut
+    // If user is not logged in navigate to home screen after a delay
     if (!user) {
       const timer = setTimeout(() => {
         navigate('/')
@@ -63,26 +76,31 @@ const Blog = () => {
       return () => clearTimeout(timer)
     }
 
-    console.log(`blog user = ${blog?.user?.id}`)
-    console.log(`user = ${user?.id}`)
+    // Show delete button if logged in user is owner of the added blog
+    //console.log(`blog user = ${blog?.user?.id}`)
+    //console.log(`user = ${user?.id}`)
     if (blog?.user?.id === user?.id) {
       setDeleteVisible(true)
     } else {
       setDeleteVisible(false)
-      console.log(`delete state = ${deleteVisible}`)
+      //console.log(`delete state = ${deleteVisible}`)
     }
   }, [dispatch, user, navigate, blog])
 
+  //alterate display style according to deletevisible state
+  const showDeleteButton = { display: deleteVisible ? '' : 'none' }
+
+  // Show info if user is not logged in
   if (!user) {
     return <div style={padding}>You are not logged in!</div>
   }
 
+  //Show loading screen if blog is not ready
   if (!blog) {
     return <div>Loading...</div>
   }
 
-  const showDeleteButton = { display: deleteVisible ? '' : 'none' }
-
+  //Function for adding comments
   const addComment = (event) => {
     event.preventDefault()
 
@@ -98,8 +116,17 @@ const Blog = () => {
     event.target.reset()
   }
 
+  const deleteBlog = () => {
+    if (window.confirm(`Delete blog ${blog.title} by ${blog.author}?`)) {
+      dispatch(remove(blog))
+      navigate('/')
+    }
+    return
+  }
+
+  // render the blog and comments comments could be as own component
   return (
-    <div style={padding}>
+    <div className="test" style={padding}>
       <h2>
         {blog.title} by author: {blog.author}
       </h2>
@@ -107,7 +134,7 @@ const Blog = () => {
         <div>
           <b>Link to the blog: </b> <a href={blog.url}>{blog.url}</a>
         </div>
-        <div>
+        <div className="likes">
           <b>Likes: </b> {blog.likes}
         </div>
         <div className={'lastStyle'}>
@@ -129,8 +156,7 @@ const Blog = () => {
           style={showDeleteButton}
           className={'delButton buttonWidth'}
           onClick={() => {
-            dispatch(remove(blog))
-            navigate('/')
+            deleteBlog()
           }}
         >
           Delete

@@ -1,5 +1,4 @@
 //toglable componen for showing blogForm
-
 //dependencies
 import { useState, useImperativeHandle, forwardRef } from 'react'
 import PropTypes from 'prop-types'
@@ -7,6 +6,17 @@ import { Button } from 'react-bootstrap'
 
 // togglable component, forwardRef allows parent components to access its fuctionalities
 const Togglable = forwardRef((props, ref) => {
+  /*TODO refactor style to .css file*/
+  const cancelButton = {
+    marginLeft: 30,
+  }
+
+  const marginTop = {
+    marginTop: 20,
+    marginLeft: 30,
+    width: 150,
+  }
+
   // state for visibility
   const [visible, setVisible] = useState(false)
 
@@ -25,16 +35,6 @@ const Togglable = forwardRef((props, ref) => {
       toggleVisibility,
     }
   })
-
-  const cancelButton = {
-    marginLeft: 30,
-  }
-
-  const marginTop = {
-    marginTop: 20,
-    marginLeft: 30,
-    width: 150,
-  }
 
   // for rendering buttons
   return (

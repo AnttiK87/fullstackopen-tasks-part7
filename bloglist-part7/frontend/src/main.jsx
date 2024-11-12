@@ -7,7 +7,6 @@ import { BrowserRouter as Router } from 'react-router-dom'
 
 const rootElement = document.getElementById('root')
 
-// Määritetään minHeight suoraan root-elementille
 rootElement.style.minHeight = '100vh'
 
 ReactDOM.createRoot(rootElement).render(

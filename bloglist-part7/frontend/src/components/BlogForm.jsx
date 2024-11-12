@@ -1,4 +1,4 @@
-//for rendering form to add blogs
+//component for rendering form for adding blogs
 
 //dependencies
 import { useDispatch } from 'react-redux'
@@ -6,13 +6,26 @@ import { createBlog } from '../reducers/blogReducer.js'
 import { Form, Button } from 'react-bootstrap'
 
 const BlogForm = () => {
+  /*TODO refactor styles to .css file*/
+  const marginBottom = {
+    marginBottom: 10,
+    marginLeft: 0,
+    width: 80,
+  }
+
+  const margin = {
+    marginLeft: 30,
+    marginTop: 30,
+  }
+
+  //set dispatch
   const dispatch = useDispatch()
 
-  //function for sending form content and calling creteBlog
+  // function for sending form content and calling createBlog
   const addBlog = (event) => {
     event.preventDefault()
 
-    const { title, author, url } = event.target
+    const { title, author, url } = event.target.elements
 
     const blog = {
       title: title.value,
@@ -23,17 +36,6 @@ const BlogForm = () => {
     dispatch(createBlog(blog))
 
     event.target.reset()
-  }
-
-  const marginBottom = {
-    marginBottom: 10,
-    marginLeft: 0,
-    width: 80,
-  }
-
-  const margin = {
-    marginLeft: 30,
-    marginTop: 30,
   }
 
   // rendering the form
@@ -76,5 +78,4 @@ const BlogForm = () => {
   )
 }
 
-// exports
 export default BlogForm

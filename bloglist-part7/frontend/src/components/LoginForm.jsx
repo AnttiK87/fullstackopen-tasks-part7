@@ -1,3 +1,4 @@
+//component for rendering form for logging in
 //dependencies
 import { useSelector, useDispatch } from 'react-redux'
 import { setUsername, setPassword } from '../reducers/userReducer.js'
@@ -5,15 +6,17 @@ import useLogin from '../hooks/useLogin'
 import { Form, Button } from 'react-bootstrap'
 
 const LoginForm = () => {
+  //set dispatch
   const dispatch = useDispatch()
 
-  // Haetaan käyttäjänimi ja salasana Redux-tilasta
+  // Get username and password state
   const username = useSelector((state) => state.user.username)
   const password = useSelector((state) => state.user.password)
 
   // get handleLogin
   const { handleLogin } = useLogin()
 
+  /*TODO refactor style to .css file*/
   const margin = {
     marginLeft: 60,
     marginTop: 30,
@@ -23,6 +26,7 @@ const LoginForm = () => {
     marginBottom: 20,
   }
 
+  // rendering the form
   return (
     <div style={margin}>
       <h2 style={marginBottom}>Login</h2>
@@ -48,7 +52,7 @@ const LoginForm = () => {
             onChange={(event) => dispatch(setPassword(event.target.value))}
           />
         </Form.Group>
-        <Button variant="primary" className="Button" type="submit">
+        <Button name="login" variant="primary" className="Button" type="submit">
           Login
         </Button>
       </Form>

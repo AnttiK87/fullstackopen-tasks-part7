@@ -12,12 +12,12 @@ body {
 }
 
 .main-content {
-  flex-grow: 1; /* Täyttää kaiken jäljellä olevan tilan */
-  overflow-y: auto; /* Jos sisältö ei mahdu ruudulle, lisää scrollaus */
+  flex-grow: 1;
+  overflow-y: auto;
 }
 
 .footer {
-  margin-top: auto; /* Varmistaa, että footer menee alas */
+  margin-top: auto;
 }
 
 .notification {
@@ -27,12 +27,12 @@ body {
   border-radius: 5px;
   padding: 10px;
   max-width: 90%;
-  min-width: 90%; /* Maksimikoko on 90 % käytettävissä olevasta leveydestä */
-  margin: 20px auto; /* Keskittää vaakasuunnassa */
+  min-width: 90%;
+  margin: 20px auto;
   display: inline-flex;
-  flex-wrap: wrap; /* Jos sisältö ylittyy, se kääritään */
-  justify-content: center; /* Keskittää sisällön vaakasuunnassa */
-  align-items: center; /* Keskittää sisällön pystysuunnassa */
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 .success {
@@ -99,7 +99,7 @@ a:hover {
 }
 
 .blogStyle:nth-child(odd) {
-  background-color: #a5a58d; /* Vaalean harmaa */
+  background-color: #a5a58d;
 }
 
 .Button {
@@ -146,7 +146,6 @@ a:hover {
 }
 
 @media (min-width: 990px) {
-  /* Tämä tyyli otetaan käyttöön vain isoilla näytöillä */
   .nav-container {
     background-color: #a5a58d;
     padding: 20;
