@@ -63,7 +63,7 @@ const App = () => {
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       blogService.setToken(user.token)
-      dispatch(setUser(user)) // Aseta käyttäjä Redux-tilaan
+      dispatch(setUser(user))
     }
   }, [dispatch])
   //console.log(user)
